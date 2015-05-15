@@ -63,18 +63,24 @@ class linked_list_RFC(object):
     def get_head_RFC(self):
         return self.head_RFC
         
+    def get_hostnameRFC(self):
+        return self.hostname
+        
     def add_RFC(self, RFC_number, title, hostname):
         new_RFC = node_RFC(RFC_number, title, hostname)
         new_RFC.set_nextRFC(self.head_RFC)
         self.head_RFC = new_RFC
         
-    def del_RFC(self, RFC_number):
+    #def search_RFC(self, RFC_number):
+     # need to add this function according to further requirements   
+        
+    def del_RFC(self, hostname):
         curr = self.head_RFC
         prev = None
         while curr:
             if curr is None:
                 break
-            if curr.get_RFC_number == RFC_number:
+            if curr.get_hostnameRFC == hostname:
                 if prev is None:
                     self.head_RFC = curr.get_nextRFC()
                 else:
