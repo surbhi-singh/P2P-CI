@@ -1,5 +1,7 @@
 from socket import *
 import os
+import re
+import sendResponse
 from linked_lists import *
 serverPort = 7734
 serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -18,18 +20,29 @@ while 1:
     newpeer.add_peer(clientname, clientport)
     if os.fork() == 0:
           serverSocket.close()
-          implement_child(connectionSocket); #to do..dnt forget to delete the peer's node from the linked list after the work is done.
+          implement_child(connectionSocket, clientname, clientport); #to do..dnt forget to delete the peer's node from the linked list after the work is done.
           newpeer.del_peer(clientname)
           exit(0)
     connectionSocket.close()
-def implement_child(connectionSocket):
+def implement_child(connectionSocket, host, port):
     result = connectionSocket.recv(1024)
-    for line in result.split("\n"):
-        if "ADD" in line:
-            #Do ADD functionality
-            for word in result.split(" "):
+    line = result.split("\n"):
+    start = line[0].find('RFC: ') + 5
+    end = line[0].find(' ', start)
+    rfc_num = line[0][start:end]
+    start = line[3].find('TITLE: ')+7
+    title = line[3][start:]
+    if "ADD" in line[0]:
+        #Do ADD functionality
+        # if this approach doent wrk for searching then use this:
+        #rfc_num = re.search('RFC: (.+?) ', line[0]).group(1)
+        #title = re.search('TITLE: (.+?)\n', line[3]).group(1)
+        rfcadder.add_RFC(rfc_num, title, host)
+        status = "200 OK"
+        sendResponse.addres(version, status, rfc_num, title, host, port)
                 
-        else if "LIST" in line:
-            #Do LIST functionality
-        else:
-            #Do LOOKUP functionality
+    else if "LIST" in line[0]:
+        #Do LIST functionality
+            
+    else:
+        #Do LOOKUP functionality
