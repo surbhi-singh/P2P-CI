@@ -8,7 +8,7 @@ serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind('',serverPort)
 serverSocket.listen(4)
 newpeer = linked_list_peer()
-rfcadder = addRFC()
+rfcadder = linked_list_RFC()
 print 'Server is up and listening'
 while 1:
     #accept function accepts a connection request from a client and assigns the new connection socket to 
@@ -43,7 +43,7 @@ def implement_child(connectionSocket, host, port):
         #title = re.search('TITLE: (.+?)\n', line[3]).group(1)
         rfcadder.add_RFC(rfc_num, title, host)
         status = "200 OK"
-        sendResponse.addres(version, status, rfc_num, title, host, port)
+        sendResponse.addres(connectionSocket, version, status, rfc_num, title, host, port)
                 
     else if "LIST" in line[0]:
         #Do LIST functionality
@@ -53,7 +53,10 @@ def implement_child(connectionSocket, host, port):
         end = line[0].find(' ', start)
         start = end + 1
         version = line[0][start:]
-        sendResponse.listres(version)    
+        #define status
+        connectionSocket.send(version+" "+status+"\n")
+        rfcadder.traverse_RFC()
+        
     else:
         #Do LOOKUP functionality
         start = line[0].find('RFC: ') + 5
@@ -64,5 +67,6 @@ def implement_child(connectionSocket, host, port):
         start = line[0].find(rfc_num)
         end = line[0].find(' ', start)
         start = end + 1
+        #define status
         version = line[0][start:]
-        sendResponse.lookupres(version, rfc_num, title)
+        rfcadder.search_RFC()
