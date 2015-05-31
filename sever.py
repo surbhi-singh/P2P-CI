@@ -53,9 +53,7 @@ def implement_child(connectionSocket, host, port):
         end = line[0].find(' ', start)
         start = end + 1
         version = line[0][start:]
-        #define status
-        connectionSocket.send(version+" "+status+"\n")
-        rfcadder.traverse_RFC()
+        rfcadder.traverse_RFC(connectionSocket, version)
         
     else:
         #Do LOOKUP functionality
@@ -67,6 +65,5 @@ def implement_child(connectionSocket, host, port):
         start = line[0].find(rfc_num)
         end = line[0].find(' ', start)
         start = end + 1
-        #define status
         version = line[0][start:]
-        rfcadder.search_RFC()
+        rfcadder.search_RFC(connectionSocket, version, rfc_num, title, host, port)
