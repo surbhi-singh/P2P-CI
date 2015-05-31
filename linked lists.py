@@ -9,6 +9,8 @@ class node_peer(object):
         self.next = next
     def get_hostnamePeer(self):
         return self.hostname
+    def get_portnumber(self):
+        return self.port_number
         
         
         
@@ -19,6 +21,13 @@ class linked_list_peer(object):
         self.head_peer = head_peer
     def get_head_peer(self):
         return self.head_peer
+    def get_portOfHost(self, hostname):
+        head = self.head_peer
+        while head != None:
+            if head.get_hostnamePeer() == hostname:
+                return head.getportnumber()
+            head = head.get_nextPeer()
+    
     def add_peer(self, hostname, port_number):
         new_peer = node_peer(hostname, port_number)
         new_peer.set_nextPeer(self.head_peer)
@@ -52,6 +61,10 @@ class node_RFC(object):
         return self.next
     def get_RFC_number(self):
         return self.RFC_number
+    def get_RFC_title(self):
+        return self.title
+    def get_hostname(self):
+        return self.hostname
     
 class linked_list_RFC(object):
     def __init__(self):
@@ -71,8 +84,40 @@ class linked_list_RFC(object):
         new_RFC.set_nextRFC(self.head_RFC)
         self.head_RFC = new_RFC
         
-    #def search_RFC(self, RFC_number):
-     # need to add this function according to further requirements   
+    def traverse_RFC(self, connectionSocket, version):
+    #traverse the list and for every node send the node's data to client
+        head = get_head_RFC()
+        flag = 0
+        if head == None:
+            status = "404 Not Found"
+            connectionSocket.send(version+" "+status+"\n")
+            return
+        while head != None:
+            status = "200 OK"
+            if flag == 0:
+                connectionSocket.send(version+" "+status+"\n")
+            flag = 1
+            headpeer = linked_list_peer()
+            connectionSocket.send("RFC "+head.get_RFC_number()+" "+head.get_RFC_title()+" "+head.get_hostname()+" "+headpeer.get_portOfHost(head.get_hostname())+"\n")
+            head = head.get_nextRFC()
+    def search_RFC(self, connectionSocket, version, rfc_num, title):
+        # need to add this function according to further requirements
+        head = get_head_RFC()
+        flag = 0
+        if head == None:
+            status = "404 Not Found"
+            connectionSocket.send(version+" "+status+"\n")
+            return
+        while head != None:
+            if head.get_RFC_number() != rfc_num:
+                head = head.get_nextRFC()
+                continue
+            if flag == 0:
+                connectionSocket.send(version+" "+status+"\n")
+            flag = 1
+            headpeer = linked_list_peer()
+            connectionSocket.send("RFC "+head.get_RFC_number()+" "+head.get_RFC_title()+" "+head.get_hostname()+" "+headpeer.get_portOfHost(head.get_hostname())+"\n")
+            head = head.get_nextRFC()
         
     def del_RFC(self, hostname):
         curr = self.head_RFC
