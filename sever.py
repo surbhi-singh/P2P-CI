@@ -27,13 +27,17 @@ while 1:
 def implement_child(connectionSocket, host, port):
     result = connectionSocket.recv(1024)
     line = result.split("\n"):
-    start = line[0].find('RFC: ') + 5
-    end = line[0].find(' ', start)
-    rfc_num = line[0][start:end]
-    start = line[3].find('TITLE: ')+7
-    title = line[3][start:]
     if "ADD" in line[0]:
         #Do ADD functionality
+        start = line[0].find('RFC: ') + 5
+        end = line[0].find(' ', start)
+        rfc_num = line[0][start:end]
+        start = line[3].find('TITLE: ')+7
+        title = line[3][start:]
+        start = line[0].find(rfc_num)
+        end = line[0].find(' ', start)
+        start = end + 1
+        version = line[0][start:]
         # if this approach doent wrk for searching then use this:
         #rfc_num = re.search('RFC: (.+?) ', line[0]).group(1)
         #title = re.search('TITLE: (.+?)\n', line[3]).group(1)
@@ -43,6 +47,22 @@ def implement_child(connectionSocket, host, port):
                 
     else if "LIST" in line[0]:
         #Do LIST functionality
-            
+        start = line[3].find('TITLE: ')+7
+        title = line[3][start:]
+        start = line[0].find(rfc_num)
+        end = line[0].find(' ', start)
+        start = end + 1
+        version = line[0][start:]
+        sendResponse.listres(version)    
     else:
         #Do LOOKUP functionality
+        start = line[0].find('RFC: ') + 5
+        end = line[0].find(' ', start)
+        rfc_num = line[0][start:end]
+        start = line[3].find('TITLE: ')+7
+        title = line[3][start:]
+        start = line[0].find(rfc_num)
+        end = line[0].find(' ', start)
+        start = end + 1
+        version = line[0][start:]
+        sendResponse.lookupres(version, rfc_num, title)
