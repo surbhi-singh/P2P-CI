@@ -18,5 +18,17 @@ if function != "LIST":
     clientSocket.send(function+' '+'RFC '+rfc+' '+version+"\n"+"HOST: "+host+"\n"+"PORT: "+port+"\n"+"TITLE: "+title)
 clientSocket.send(function+' '+'ALL'+' '+version+"\n"+"HOST: "+host+"\n"+"PORT: "+port)
 result = clientSocket.recv(1024)
-//open connection with the peer.. using the data in result variable
+#open connection with the peer.. using the data in result variable
+line = result.split("\n")
+version, a , b = line[0].split(" ")
+status = a+b
+if status == "200 OK"
+    #open connection with peer and do the things
+    start = line[1].find('RFC: ')+5
+    end = line[1].find(' ', start)
+    rfc_num = line[1][start:end]
+    port = line[1][-4:]
+    start = end + 1
+    end = line[1].find(port)-1
+    r = line[1][start:end]
 clientSocket.close()
